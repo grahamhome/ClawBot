@@ -72,17 +72,31 @@ void steerLeft(bool pressed) {
 }
 
 /*
- * Lower the robot's arm when a button is pressed.
- * Raise the arm when the button is released.
+ * Open the robot's claw when a button is pressed.
+ * Close the claw when the button is released.
  */
 void clamp(bool pressed) {
   Serial.print("Robot ");
   if (pressed) {
       Serial.println("is opening claw");
-      robot.Clamp(45);
   } else {
       Serial.println("is closing claw");
-      robot.Clamp(135);
+  }
+  robot.Clamp(pressed);
+}
+
+/*
+ * Raise the robot's arm when a button is pressed.
+ * Stop raising arm when the button is released.
+ */
+void raise(bool pressed) {
+  Serial.print("Robot ");
+  if (pressed) {
+      Serial.println("is raising arm");
+      robot.Move_Arm(45);
+  } else {
+    Serial.println("is lowering arm");
+    robot.Move_Arm(135);
   }
 }
 
@@ -95,6 +109,7 @@ void registerRobotFunctions() {
   controller.registerCallback(2, steerLeft);
   controller.registerCallback(3, steerRight);
   controller.registerCallback(4, clamp);
+  controller.registerCallback(5, raise);
 }
 
 /*
@@ -106,8 +121,7 @@ void registerRobotFunctions() {
  */
 void init_everything() {
   // Initialize serial connection
-  Serial.begin(115200);
-  delay(2000);
+  Serial.begin(9600);
 
   // Initialize controller
   controller.init(ROBOT_NAME);
@@ -126,4 +140,14 @@ void init_everything() {
  */
 void update() {
   controller.update();
+  // if (Serial.available() > 0) {
+  //   int receivedValue = Serial.parseInt();
+  //   if (Serial.read() == '\n') {
+  //     Serial.print("Received value: ");
+  //     Serial.println(receivedValue);
+
+  //     robot.Move_Arm(receivedValue);
+  //   }
+  //   Serial.flush();
+  // }
 }

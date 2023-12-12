@@ -10,7 +10,7 @@
  * when buttons on a Dabble gamepad are pressed or released.
  * Does not require any modifications in order to be used in different projects.
  */
-Controller::Controller() : buttons{{false, defaultCallback}, {false, defaultCallback}, {false, defaultCallback}, {false, defaultCallback}, {false, defaultCallback}} {
+Controller::Controller(): buttons{{false, defaultCallback}, {false, defaultCallback}, {false, defaultCallback}, {false, defaultCallback}, {false, defaultCallback}, {false, defaultCallback}} {
   // Constructor implementation
 }
 
@@ -58,4 +58,5 @@ void Controller::update() {
   setButtonState(2, GamePad.isLeftPressed());
   setButtonState(3, GamePad.isRightPressed());
   setButtonState(4, GamePad.isSelectPressed());
+  setButtonState(5, GamePad.isUpPressed());
 }

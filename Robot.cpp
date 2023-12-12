@@ -1,32 +1,8 @@
 #include <Arduino.h>
-#include <Servo.h>
 #include "Robot.h"
 
-// Define pins for servos - all are PWM
-const int ARM_SERVO_PIN = 9;
-const int CLAW_SERVO_PIN = 10;
-const int BASE_SERVO_PIN = 11;
 
-// Define servo angles for init/default position
-const int ARM_DEFAULT_DEG = 90;  //initialize the angle value of arm servo
-const int CLAW_DEFAULT_DEG  = 135; //initialize the angle value of claw servo
-const int BASE_DEFAULT_DEG = 90;  //initialize the angle value of base servo
-
-// Define pins used for motor
-// TODO add other motors
-const int MTR_A_DIR = 2; // Forward or reverse - Digital
-const int MTR_A_SPD = 5; // Speed - PWM
-const int MTR_B_DIR = 4; // Forward or reverse - Digital
-const int MTR_B_SPD = 6; // Speed - PWM
-
-// TODO make these servo instances private variables in the Robot class
-Servo armServo;  //servo of arm
-Servo clawServo;   //servo of claw
-Servo baseServo;  //servo of base
-
-Robot::Robot() {
-  
-}
+Robot::Robot() {}
 void Robot::init() {
 
   pinMode(MTR_A_DIR, OUTPUT);
@@ -38,15 +14,14 @@ void Robot::init() {
   clawServo.attach(CLAW_SERVO_PIN);   //arm Servo 2 is connected to D10
   baseServo.attach(BASE_SERVO_PIN);  //base Servo 3 is connected to D11
 
-  armServo.write(ARM_DEFAULT_DEG);
-  clawServo.write(CLAW_DEFAULT_DEG);
-  baseServo.write(BASE_DEFAULT_DEG);
+  Move_Arm(ARM_LOW_POS);
+  Clamp(false);
+  Rotate_Base(BASE_CENTER_POS);
 }
 
 // Drive the robot forward at the passed in speed (0-255)
 void Robot::Move_Forward(int speed)
 {
-  Serial.println("Robot is REALLY moving forward");
   digitalWrite(MTR_A_DIR,HIGH); //D2 digital I/O port controls the direction of the motor of interface A
   analogWrite(MTR_A_SPD,speed); //D5 digital I/O port outputs PWM signal to control the speed of the motor of port A.
   digitalWrite(MTR_B_DIR,LOW);  //D4 digital I/O port controls the direction of the motor of interface B - reverse of A 
@@ -93,6 +68,24 @@ void Robot::Stop()
  * Give 'em the clamps!
  * Open or close robot claw.
  */
-void Robot::Clamp(int position) {
-  clawServo.write(position);
+void Robot::Clamp(bool open) {
+  if (open) {
+    clawServo.write(CLAW_OPEN_POS);
+  } else {
+    clawServo.write(CLAW_CLOSED_POS);
+  }
+}
+
+/*
+ * Set the arm to the given position.
+ */
+void Robot::Move_Arm(int angle) {
+  armServo.write(angle);
+}
+
+/*
+ * Set the base to the given position.
+ */
+void Robot::Rotate_Base(int angle) {
+  baseServo.write(angle);
 }

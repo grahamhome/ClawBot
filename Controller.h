@@ -15,7 +15,7 @@ private:
     bool state;
     FunctionPointer callback;
   };
-  ButtonData buttons[5];
+  ButtonData buttons[6];
   void setButtonState(int buttonIndex, bool newState);
   static void defaultCallback(bool newState);
 };
